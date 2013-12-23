@@ -1,7 +1,7 @@
 /**
  * 
  * \author Diego Rondelli
- * prova
+ * 
  */
 #include <cstdio>
 #include "miosix.h"
