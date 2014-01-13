@@ -5,7 +5,6 @@
  */
 
 
-
 #include <cstdio>
 #include "spi1_reg.h"
 #include "miosix.h"

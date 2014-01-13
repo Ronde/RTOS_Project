@@ -8,7 +8,7 @@
 #ifndef ADDRESS_B_H
 #define	ADDRESS_B_H
 
-#define SPI_MULTI_OP 1<<6
+#define SPI_MULTI_OP    1<<6
 #define SPI_READ        1<<7
 
 #endif	/* ADDRESS_B_H */

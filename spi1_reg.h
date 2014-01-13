@@ -17,5 +17,6 @@
 #define SPE             1<<6
 #define SSM             1<<9
 
+
 #endif	/* SPI1_REG_H */
 
