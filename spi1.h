@@ -13,6 +13,8 @@ class Spi
 {
 public:
     
+    Spi();
+    
     void config();
     
     uint reciveData();

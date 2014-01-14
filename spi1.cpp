@@ -19,7 +19,7 @@ typedef Gpio<GPIOA_BASE, 6> MISO;
 typedef Gpio<GPIOA_BASE, 7> MOSI;
 typedef Gpio<GPIOE_BASE, 3> CS;
 
-
+Spi::Spi(){}
 /**
  * This function sets up all the GPIO used for the accelerometer.
  */

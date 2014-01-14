@@ -10,9 +10,11 @@
 class Lis302dl{
 public:
     
+    Lis302dl();
+    
     void memsConfig(void);
     
-    int getMemsData(uint* x, uint* y, uint* z);
+    void getMemsData(uint* x, uint* y, uint* z);
     
     //void lis3dlSetRange(int8_t range);
 };
