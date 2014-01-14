@@ -43,6 +43,12 @@ void spiConfig()
    
 }
 
+uint8_t spiReciveData(){
+    
+      return SPI_TypeDef->DR
+    
+}
+
 void csOn(){
     
     SPI_TypeDef->CR1 |= (SSM | SPE);
@@ -55,8 +61,61 @@ void csOff(){
     
 }
 
-int spiWrite(uint8_t addr, uint8_t* buffer, int len)
-{	
+int isBusy(int reg){
+    
+    return SPI_TypeDef->SR >> reg;
+    
+}
+
+void spiSendData(unit8_t addr, unit8_t data){
+    
+    addr |= data;
+    
+}
+
+uint8_t spiSingleRead(uint8_t addr){
+    
+    addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
+    
+    uint8_t readed = 0;
+    addr |= SPI_READ;
+    
+    /* Transmission start: pull CS low */
+	csOn();
+	
+	/* Send address */
+	while(isBusy(SPI_TXE) == RESET){}
+	spiSendData(SPI_TypeDef->DR, addr);
+			
+	/* Dummy read to make sure shift register is empty.
+	 * Note that TXE=1 just tells the Transmit Buffer is empty
+	 * and therefore new data can be put in Data Register, not
+	 * that actual data on Shift Register has all been put on wire.
+	 */
+	while(isBusy(SPI_RXNE)){}
+	
+       spiReciveData();  
+
+		/* Dummy write */
+		while(isBusy(SPI_TXE)){}
+		spiSendData(SPI_TypeDef->DR, 0xff);
+	      
+		/* Actual read */
+		while(isBusy(SPI_RXNE)){}
+		readed = spiReciveData();
+
+	/* Transmission end: pull CS high */
+	csOff();
+
+	return readed;
+}
+    
+}
+
+int spiWrite(uint8_t addr, uint8_t* buffer, int len){
+
+        addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
+	
 	if(len <= 0){
                 return -1;
         }
@@ -70,20 +129,24 @@ int spiWrite(uint8_t addr, uint8_t* buffer, int len)
 	csOn();
 	
 	/* Send address */
-	while(SPI_GetFlagStatus(SPI2, SPI_FLAG_TXE) == RESET){}
-	SPI_SendData(SPI2, addr);
+	while(isBusy(SPI_BSY)){}
+        
+	spiSendData(SPI_TypeDef->DR, addr);
 	
 	/* Wait data hits slave */ 
-	while(SPI_GetFlagStatus(SPI2, SPI_FLAG_RXNE) == RESET);
-	SPI_ReceiveData(SPI2);
+	while(isBusy(SPI_RXNE)) {}
+        
+	spiReciveData(SPI2);
 		
 	/* Send data */
 	while(len--){
-		while(SPI_GetFlagStatus(SPI2, SPI_FLAG_TXE) == RESET){}
-		SPI_SendData(SPI2, *buffer++);
+		while(isBusy(SPI_TXE)){}
+                
+		spiSendData(SPI_TypeDef->DR, *buffer++);
 			
-		while(SPI_GetFlagStatus(SPI2, SPI_FLAG_RXNE) == RESET);
-		SPI_ReceiveData(SPI2);
+		while(isBusy(SPI_RXNE));
+                
+		spiReciveData(SPI2);
 	}
 
 	/* Transmission end: pull CS high */
