@@ -14,15 +14,15 @@ using namespace std;
 using namespace miosix;
 Spi spi;
 
-
+Lis302dl::Lis302dl(){}
 /*
  * Private function that set the accelerometer registers
  */
 void Lis302dl::memsConfig(){
     uint val;
     spi.config();
-    CTRL_REG1 |=( CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN
-            | CTRL_REG1_PDEN)
+    val = CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN
+            | CTRL_REG1_PDEN;
     spi.write(CTRL_REG1, &val, 1);
 }
 /*
