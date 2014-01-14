@@ -1,14 +1,16 @@
 /* 
- * File:   accellerometer.cpp
- * Author: user
- *
- * Created on 13 gennaio 2014, 13.47
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      14/01/2014
  */
 
-#include <cstdlib>
-#include "lis302dl.h"
+#include <cstdio>
 #include "miosix.h"
-#include "serial.h"
+#include "lis302dl.h"
+
 #define LIMIT 120
 #define SOUND_FREQUENCY 50
 
@@ -23,6 +25,8 @@ uint y;
 uint z;
 
 typedef Gpio<GPIOD_BASE,15> blueLed;
+typedef Gpio<GPIOD_BASE,14> redLed;
+Lis302dl lis302dl;
 
 typedef enum
    {
@@ -32,20 +36,30 @@ typedef enum
 
 tState currentState= onPause;
 
-int main(int argc, char** argv) {
-    
-    blueLed::mode(Mode::OUTPUT);
-    
-    accellerometerConfig();
-    
-    while(true){
-        
-        getAccellerometerData(&x,&y,&z);
-        writeData();
-        stepCounter();
-        
-        }
-    
+void incrementStep(){
+    step++;
+    //if(!(step%50)) evviva(step);
+}
+
+int getStep(){
+    return step;
+}
+/*
+void writeData(){
+    char str[24]="x: "+x+"\ny: "+y+"\nz: "+z"\n";
+    serial.write(str);
+}
+*/
+void ledBlue(){
+    blueLed::high();
+    usleep(100000);
+    blueLed::low();
+}
+
+void ledRed(){
+    redLed::high();
+    usleep(100000);
+    redLed::low();
 }
 
 void stepCounter(){
@@ -65,6 +79,7 @@ void stepCounter(){
         if ( (test< (Sensitivity - (Hysteresis/2) ) ) && (currentState == onMove) )
                 {
                 step++;
+                ledBlue();
                 currentState = onPause;
                 }
         else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause) )
@@ -73,22 +88,17 @@ void stepCounter(){
                 }
 }
 
-void incrementStep(){
-    step++;
-    //if(!(step%50)) evviva(step);
-}
-
-void getStep(){
-    return step;
-}
-
-void writeData(){
-    char str[24];
-    str="x: "+x+"\ny: "+y+"\nz: "+z"\n";
-}
-
-void ledBlink(){
-    blueLed::high();
-    usleep(100000);
-    blueLed::low();
+int main(int argc, char** argv) {
+    
+    blueLed::mode(Mode::OUTPUT);
+    
+    lis302dl.memsConfig();
+    
+    while(true){
+        
+        lis302dl.getMemsData(&x,&y,&z);
+        //writeData();
+        stepCounter();
+        ledRed();
+        }
 }

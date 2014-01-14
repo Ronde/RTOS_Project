@@ -28,7 +28,7 @@ SerialPort::SerialPort()
 {
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 	RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
-
+ 
 	GPIOA->AFR[0] |= (7<<(2*4)) | (7<<(3*4));
 	GPIOA->MODER |= (2<<(2*2)) | (2<<(3*2));
 

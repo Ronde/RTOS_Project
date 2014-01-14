@@ -4,34 +4,36 @@
  *
  * Created on 13 gennaio 2014, 14.00
  */
+#include <cstdio>
 #include "miosix.h"
-#include "lis302dl_reg.h"
+#include "lis302dl.h"
 #include "spi1.h"
-#include <stdint.h>
+#include "lis302dl_reg.h"
 
 using namespace std;
 using namespace miosix;
+Spi spi;
+
 
 /*
  * Private function that set the accelerometer registers
  */
-void accellerometerConfig(){
+void Lis302dl::memsConfig(){
     uint val;
-    spiConfig();
+    spi.config();
     CTRL_REG1 |=( CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN
             | CTRL_REG1_PDEN)
-    spiWrite(CTRL_REG1, &val, 1);
-
+    spi.write(CTRL_REG1, &val, 1);
 }
 /*
  * 
  */
-void  getAccelerometerData(uint* x, uint* y, uint* z)
+void  Lis302dl::getMemsData(uint* x, uint* y, uint* z)
 {	
 	/* Read out all 6 bytes in one shot */
-	*x = spiSingleRead(OUT_X);
-        *y = spiSingleRead(OUT_Y);
-        *z = spiSingleRead(OUT_Z);
+	*x = spi.singleRead(OUT_X);
+        *y = spi.singleRead(OUT_Y);
+        *z = spi.singleRead(OUT_Z);
 }
 /*
 void setRange(int8_t range)

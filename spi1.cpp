@@ -3,15 +3,11 @@
  * @author Diego Rondelli
  * 
  */
-
-
 #include <cstdio>
-#include "spi1_reg.h"
 #include "miosix.h"
+#include "spi1.h"
+#include "spi1_reg.h"
 #include "address_b.h"
-
-
-
 
 #define ALTERNATE_FUNCTION_SPI1=5
 
@@ -27,8 +23,7 @@ typedef Gpio<GPIOE_BASE, 3> CS;
 /**
  * This function sets up all the GPIO used for the accelerometer.
  */
-
-void spiConfig()
+void Spi::config()
 {
 
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
@@ -43,36 +38,36 @@ void spiConfig()
    
 }
 
-uint spiReciveData(){
+uint Spi::reciveData(){
     
       return SPI_TypeDef->DR;
 }
 
-void csOn(){
+void Spi::csOn(){
     
     SPI_TypeDef->CR1 |= (SSM | SPE);
     
 }
 
-void csOff(){
+void Spi::csOff(){
  
     SPI_TypeDef->CR1 &= (!(SSM) & !(SPE));
     
 }
 
-int isBusy(int reg){
+int Spi::isBusy(int reg){
     
     return SPI_TypeDef->SR >> reg;
     
 }
 
-void spiSendData(uint addr, uint data){
+void Spi::sendData(uint addr, uint data){
     
     addr |= data;
     
 }
 
-uint spiSingleRead(uint addr){
+uint Spi::singleRead(uint addr){
     
     addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
     
@@ -110,7 +105,7 @@ uint spiSingleRead(uint addr){
 }
     
 
-int spiWrite(uint addr, uint* buffer, int len){
+int Spi::write(uint addr, uint* buffer, int len){
 
         addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
 	
