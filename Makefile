@@ -14,8 +14,7 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main2.cpp\
-button.cpp
+pedometer.cpp
 ##
 ## List here additional static libraries with relative path
 ##
