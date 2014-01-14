@@ -14,7 +14,9 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-pedometer.cpp
+main.cpp\
+lis302dl.cpp\
+spi1.cpp
 ##
 ## List here additional static libraries with relative path
 ##
