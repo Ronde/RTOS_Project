@@ -6,6 +6,7 @@
  */
 #include "miosix.h"
 #include "lis302dl_reg.h"
+#include "spi1.h"
 #include <stdint.h>
 
 using namespace std;
@@ -14,8 +15,8 @@ using namespace miosix;
 /*
  * Private function that set the accelerometer registers
  */
-protected void accellerometerConfig(){
-    uint8_t val;
+void accellerometerConfig(){
+    uint val;
     spiConfig();
     CTRL_REG1 |=( CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN
             | CTRL_REG1_PDEN)
@@ -25,14 +26,12 @@ protected void accellerometerConfig(){
 /*
  * 
  */
-protected void getAccelerometerData(int16_t* x, int16_t* y, int16_t* z)
-{
-	uint8_t buffer[6];
-	
+void  getAccelerometerData(uint* x, uint* y, uint* z)
+{	
 	/* Read out all 6 bytes in one shot */
-	*x = spiRead(OUT_X, 1);
-        *y = spiRead(OUT_Y, 1);
-        *z = spiRead(OUT_Z, 1);
+	*x = spiSingleRead(OUT_X);
+        *y = spiSingleRead(OUT_Y);
+        *z = spiSingleRead(OUT_Z);
 }
 /*
 void setRange(int8_t range)

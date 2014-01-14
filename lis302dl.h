@@ -11,10 +11,9 @@
 #define	LIS302DL_H
 
 /* Public APIs */
-void lis3dhConfig(void);
-int lis3dhGetAcc(int16_t* x, int16_t* y, int16_t* z);
-void lis3dhSetRange(int8_t range);
+void accelerometerConfig(void);
+int getAccellerometerData(uint* x, uint* y, uint* z);
+//void lis3dlSetRange(int8_t range);
 
 
 #endif	/* LIS302DL_H */
-
