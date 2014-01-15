@@ -14,13 +14,21 @@ class Pedometer
 {
 public:
     
-   int main(int argc, char** argv);
+   Pedometer();
+    
+   int start();
+   
+   void getStep();
+   
+private:
    
    void stepCounter();
    
-   void incrementStep();
+   void takeAverage();
    
-   void getStep();
+   void average(Average* average,int num);
+   
+   void incrementStep();
    
    void ledBlue();
    
