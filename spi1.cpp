@@ -12,7 +12,7 @@
 #include "spi1.h"
 #include "spi1_reg.h"
 #include "address_b.h"
-#include "serial.h"
+#include "utility.h"
 
 #define ALTERNATE_FUNCTION_SPI1 5
 
@@ -24,15 +24,17 @@ typedef Gpio<GPIOA_BASE, 6> MISO;
 typedef Gpio<GPIOA_BASE, 7> MOSI;
 typedef Gpio<GPIOE_BASE, 3> CS;
 SPI_TypeDef* spi_typedef_pun;
-SerialPort serial3;
+Utility* utility_s;
 
-Spi::Spi(){}
+Spi::Spi(){
+    utility_s=Utility::getInstance();
+}
 /**
  * This function sets up all the GPIO used for the accelerometer.
  */
 void Spi::config()
 {
-    serial3.test();
+    utility_s->test();
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
     SCK::mode(Mode::ALTERNATE);
     SCK::alternateFunction(ALTERNATE_FUNCTION_SPI1);

@@ -37,12 +37,6 @@ private:
    void average(Average* average,int num);
    
    void incrementStep();
-   
-   void ledBlue();
-   
-   void ledRed(); 
-   
-   void ledGreen();
 };
 
 #endif	/* PEDOMETER_H */

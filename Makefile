@@ -18,7 +18,8 @@ main.cpp\
 pedometer\
 lis302dl.cpp\
 spi1.cpp\
-serial.cpp
+serial.cpp\
+utility.cpp
 ##
 ## List here additional static libraries with relative path
 ##

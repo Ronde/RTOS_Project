@@ -35,8 +35,3 @@ void SerialPort::write(const char *str)
 		USART2->DR=*str++;
 	}
 }
-
-void SerialPort::test(){
-    char str[24]="Sono passato qui:  \r\n";
-    write(str);
-}

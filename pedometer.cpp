@@ -12,7 +12,7 @@
 #include "miosix.h"
 #include "lis302dl.h"
 #include "pedometer.h"
-#include "serial.h"
+#include "utility.h"
 
 #define LIMIT 120
 #define SOUND_FREQUENCY 50
@@ -30,30 +30,24 @@ int step=0;
 unsigned Sensitivity = LIMIT, old_Sensitivity = 0, Hysteresis = LIMIT/4, old_Hysteresis = 0;
 int16_t x, y, z;
 Lis302dl lis302dl;
-SerialPort serial;
 tState currentState= onPause;
-typedef Gpio<GPIOD_BASE,15> blueLed;
-typedef Gpio<GPIOD_BASE,14> redLed;
-typedef Gpio<GPIOD_BASE,12> greenLed;
+Utility* utility_p;
 
-Pedometer::Pedometer(){}
+Pedometer::Pedometer(){
+    utility_p=Utility::getInstance();
+}
 
 void Pedometer::start(){
-    
-    //Set led in output
-    blueLed::mode(Mode::OUTPUT);
-    redLed::mode(Mode::OUTPUT);
-    greenLed::mode(Mode::OUTPUT);
    
     lis302dl.memsConfig();
     
     while(true){
-        ledBlue();
+        utility_p->ledBlue();
         takeAverage();
-        ledRed();
+        utility_p->ledRed();
         //writeData();
         stepCounter();
-        ledRed();
+        utility_p->ledRed();
         }
 }
 
@@ -74,7 +68,7 @@ void Pedometer::stepCounter(){
         if ( (test< (Sensitivity - (Hysteresis/2) ) ) && (currentState == onMove) )
                 {
                 step++;
-                ledBlue();
+                utility_p->ledBlue();
                 currentState = onPause;
                 }
         else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause) )
@@ -85,7 +79,7 @@ void Pedometer::stepCounter(){
 
 void Pedometer::takeAverage(){
     lis302dl.getMemsData(&x,&y,&z);
-    ledGreen();
+    utility_p->ledGreen();
     average(&average4,4);
     average(&average16,16);
 }
@@ -103,25 +97,4 @@ void Pedometer::incrementStep(){
 
 int Pedometer::getStep(){
     return step;
-}
-
-void Pedometer::ledBlue(){
-    blueLed::high();
-    usleep(1000000);
-    blueLed::low();
-    usleep(1000000);
-}
-
-void Pedometer::ledRed(){
-    redLed::high();
-    usleep(1000000);
-    redLed::low();
-    usleep(1000000);
-}
-
-void Pedometer::ledGreen(){
-    greenLed::high();
-    usleep(1000000);
-    greenLed::low();
-    usleep(1000000);
 }
