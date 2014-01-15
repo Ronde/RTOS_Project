@@ -19,17 +19,17 @@ public:
     
     void config();
     
-    uint reciveData();
+    uint16_t reciveData();
     
     void csOn();
     
     void csOff();
     
-    int isBusy(int reg);
+    uint16_t isBusy(int reg);
     
-    void sendData(uint8_t addr, uint8_t data);
+    void sendData(uint16_t addr, uint8_t data);
     
-    uint singleRead(uint8_t addr);
+    int16_t singleRead(uint8_t addr);
     
     int write(uint8_t addr, uint8_t* buffer, uint16_t len);
 };

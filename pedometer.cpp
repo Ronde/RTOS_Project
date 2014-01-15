@@ -19,12 +19,6 @@
 using namespace std;
 using namespace miosix;
 
-struct Average{
-    int16_t x=0;
-    int16_t y=0;
-    int16_t z=0;
-};
-
 typedef enum
    {
    onPause = 0,
@@ -38,8 +32,6 @@ Lis302dl lis302dl;
 tState currentState= onPause;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
-typedef Average average4;
-typedef Average average16;
 
 Pedometer::Pedometer(){}
 
@@ -92,9 +84,9 @@ void Pedometer::takeAverage(){
 }
 
 void Pedometer::average(Average* average,int num){
-    average.x=(average.x*(num-1)+x)/num;
-    average.y=(average.y*(num-1)+y)/num;
-    average.z=(average.z*(num-1)+y)/num;
+    average->x=(average->x*(num-1)+x)/num;
+    average->y=(average->y*(num-1)+y)/num;
+    average->z=(average->z*(num-1)+y)/num;
 }
 
 void Pedometer::incrementStep(){

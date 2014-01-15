@@ -10,17 +10,25 @@
 
 #ifndef PEDOMETER_H
 #define	PEDOMETER_H
+#include "types.h"
 class Pedometer
 {
 public:
     
    Pedometer();
     
-   int start();
+   void start();
    
-   void getStep();
+   int getStep();
    
 private:
+    
+   struct Average
+        {
+        int16_t x=0;
+        int16_t y=0;
+        int16_t z=0;
+        }average4,average16;
    
    void stepCounter();
    
