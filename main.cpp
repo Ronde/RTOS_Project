@@ -12,6 +12,7 @@
 #include "pedometer.h"
 
 using namespace std;
+
 Pedometer pedometer;
 
 /*

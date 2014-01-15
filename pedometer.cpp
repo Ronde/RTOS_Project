@@ -32,6 +32,7 @@ Lis302dl lis302dl;
 tState currentState= onPause;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
+typedef Gpio<GPIOD_BASE,12> greenLed;
 
 Pedometer::Pedometer(){}
 
@@ -40,11 +41,14 @@ void Pedometer::start(){
     //Set led in output
     blueLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
+    greenLed::mode(Mode::OUTPUT);
    
     lis302dl.memsConfig();
     
     while(true){
+        ledBlue();
         takeAverage();
+        ledRed();
         //writeData();
         stepCounter();
         ledRed();
@@ -100,14 +104,23 @@ int Pedometer::getStep(){
 
 void Pedometer::ledBlue(){
     blueLed::high();
-    usleep(100000);
+    usleep(1000000);
     blueLed::low();
+    usleep(1000000);
 }
 
 void Pedometer::ledRed(){
     redLed::high();
-    usleep(100000);
+    usleep(1000000);
     redLed::low();
+    usleep(1000000);
+}
+
+void Pedometer::ledGreen(){
+    greenLed::high();
+    usleep(1000000);
+    greenLed::low();
+    usleep(1000000);
 }
 
 /*

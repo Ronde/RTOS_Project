@@ -41,6 +41,8 @@ private:
    void ledBlue();
    
    void ledRed(); 
+   
+   void ledGreen();
 };
 
 #endif	/* PEDOMETER_H */
