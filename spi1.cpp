@@ -133,7 +133,7 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 	/* Wait data hits slave */ 
 	while(isBusy(SPI_RXNE)) {}
         
-	reciveData(SPI2); //LA FUNZIONE RECIVE DATA E' UNA VOID
+	reciveData(); //LA FUNZIONE RECIVE DATA E' UNA VOID
 		
 	/* Send data */
 	while(len--){
@@ -143,7 +143,7 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 			
 		while(isBusy(SPI_RXNE));
                 
-		reciveData(SPI2);
+		reciveData();
 	}
 
 	/* Transmission end: pull CS high */
