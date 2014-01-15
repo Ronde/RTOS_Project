@@ -22,7 +22,7 @@ typedef Gpio<GPIOA_BASE, 5> SCK;
 typedef Gpio<GPIOA_BASE, 6> MISO;
 typedef Gpio<GPIOA_BASE, 7> MOSI;
 typedef Gpio<GPIOE_BASE, 3> CS;
-SPI_TypeDef spi_typedef;
+SPI_TypeDef* spi_typedef_pun;
 
 Spi::Spi(){}
 /**
@@ -40,29 +40,29 @@ void Spi::config()
     MOSI::alternateFunction(ALTERNATE_FUNCTION_SPI1);
     CS::mode(Mode::ALTERNATE);
     CS::alternateFunction(ALTERNATE_FUNCTION_SPI1);
-   
+    spi_typedef_pun=SPI2;
 }
 
 uint16_t Spi::reciveData(){
     
-      return spi_typedef.DR;
+      return spi_typedef_pun->DR;
 }
 
 void Spi::csOn(){
     
-    spi_typedef.CR1 |= SSM | SPE;
+    spi_typedef_pun->CR1 |= SSM | SPE;
     
 }
 
 void Spi::csOff(){
  
-    spi_typedef.CR1 &= !(SSM) & !(SPE);
+    spi_typedef_pun->CR1 &= !(SSM) & !(SPE);
     
 }
 
 uint16_t Spi::isBusy(int reg){
     
-    return spi_typedef.SR >> reg;
+    return spi_typedef_pun->SR >> reg;
     
 }
 
@@ -84,7 +84,7 @@ int16_t Spi::singleRead(uint8_t addr){
 	
 	/* Send address */
 	while(isBusy(SPI_TXE) == RESET){}
-	sendData(spi_typedef.DR, addr);
+	sendData(spi_typedef_pun->DR, addr);
 			
 	/* Dummy read to make sure shift register is empty.
 	 * Note that TXE=1 just tells the Transmit Buffer is empty
@@ -97,7 +97,7 @@ int16_t Spi::singleRead(uint8_t addr){
 
         /* Dummy write */
 	while(isBusy(SPI_TXE)){}
-	sendData(spi_typedef.DR, 0xff);
+	sendData(spi_typedef_pun->DR, 0xff);
 	      
 	/* Actual read */
 	while(isBusy(SPI_RXNE)){}
@@ -128,22 +128,22 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 	/* Send address */
 	while(isBusy(SPI_BSY)){}
         
-	sendData(spi_typedef.DR, addr);
+	sendData(spi_typedef_pun->DR, addr);
 	
 	/* Wait data hits slave */ 
 	while(isBusy(SPI_RXNE)) {}
         
-	reciveData(SPI2); //LA FUNZIONE RECIVE DATA E' UNA VOID
+	reciveData();
 		
 	/* Send data */
 	while(len--){
 		while(isBusy(SPI_TXE)){}
                 
-		sendData(spi_typedef.DR, *buffer++);
+		sendData(spi_typedef_pun->DR, *buffer++);
 			
 		while(isBusy(SPI_RXNE));
                 
-		reciveData(SPI2);
+		reciveData();
 	}
 
 	/* Transmission end: pull CS high */
