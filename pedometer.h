@@ -1,8 +1,11 @@
 /* 
  * File:   pedometer.h
- * Author: user
- *
- * Created on 14 gennaio 2014, 17.59
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      10/01/2014
  */
 
 #ifndef PEDOMETER_H

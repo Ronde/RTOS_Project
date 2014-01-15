@@ -1,8 +1,11 @@
 /* 
  * File:   lis302dl.cpp
- * Author: Omar Scotti
- *
- * Created on 13 gennaio 2014, 14.00
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      03/01/2014
  */
 #include <cstdio>
 #include "miosix.h"
@@ -19,7 +22,7 @@ Lis302dl::Lis302dl(){}
  * Private function that set the accelerometer registers
  */
 void Lis302dl::memsConfig(){
-    uint val;
+    uint8_t val;
     spi.config();
     val = CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN
             | CTRL_REG1_PDEN;
@@ -28,7 +31,7 @@ void Lis302dl::memsConfig(){
 /*
  * 
  */
-void  Lis302dl::getMemsData(uint* x, uint* y, uint* z)
+void  Lis302dl::getMemsData(int16_t* x, int16_t* y, int16_t* z)
 {	
 	/* Read out all 6 bytes in one shot */
 	*x = spi.singleRead(OUT_X);

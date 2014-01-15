@@ -1,11 +1,15 @@
 /* 
  * File:   lis302dl.h
- * Author: user
- *
- * Created on 13 gennaio 2014, 14.00
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      10/01/2014
  */
 #ifndef LIS302DL_H
 #define	LIS302DL_H
+#include "types.h"
 
 class Lis302dl{
 public:
@@ -14,7 +18,7 @@ public:
     
     void memsConfig(void);
     
-    void getMemsData(uint* x, uint* y, uint* z);
+    void getMemsData(int16_t* x, int16_t y, int16_t* z);
     
     //void lis3dlSetRange(int8_t range);
 };

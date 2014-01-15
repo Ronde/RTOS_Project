@@ -1,7 +1,11 @@
-/**
- * 
- * @author Diego Rondelli
- * 
+/* 
+ * File:   spi1.cpp
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      08/01/2014
  */
 #include <cstdio>
 #include "miosix.h"

@@ -1,8 +1,11 @@
 /* 
  * File:   lis302dl_reg.h
- * Author: user
- *
- * Created on 13 gennaio 2014, 14.18
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      10/01/2014
  */
 
 #ifndef LIS302DL_REG_H

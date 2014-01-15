@@ -1,14 +1,16 @@
 /* 
+ * File:   spi1.h
  *  \brief     INTRO VELOCE
  *  \details   DETTAGLI
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0
- *  \date      14/01/2014
+ *  \date      10/01/2014
  */
 
 #ifndef SPI1_H
 #define	SPI1_H
+#include "types.h"
 class Spi
 {
 public:

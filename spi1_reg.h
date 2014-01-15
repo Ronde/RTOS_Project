@@ -1,8 +1,11 @@
 /* 
  * File:   spi1_reg.h
- * Author: user
- *
- * Created on January 13, 2014, 2:15 PM
+ *  \brief     INTRO VELOCE
+ *  \details   DETTAGLI
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      10/01/2014
  */
 
 #ifndef SPI1_REG_H
