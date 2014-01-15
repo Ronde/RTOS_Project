@@ -42,7 +42,7 @@ void Spi::config()
    
 }
 
-uint Spi::reciveData(){
+uint8_t Spi::reciveData(){
     
       return SPI_TypeDef->DR;
 }
@@ -65,17 +65,17 @@ int Spi::isBusy(int reg){
     
 }
 
-void Spi::sendData(uint addr, uint data){
+void Spi::sendData(uint8_t addr, uint8_t data){
     
     addr |= data;
     
 }
 
-uint Spi::singleRead(uint addr){
+int Spi::singleRead(uint8_t addr){
     
     addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
     
-    uint readed = 0;
+    int readed = 0;
     addr |= SPI_READ;
     
     /* Transmission start: pull CS low */
@@ -107,9 +107,8 @@ uint Spi::singleRead(uint addr){
 
 	return readed;
 }
-    
-
-int Spi::write(uint addr, uint* buffer, int len){
+   
+int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 
         addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
 	

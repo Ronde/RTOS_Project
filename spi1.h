@@ -27,11 +27,11 @@ public:
     
     int isBusy(int reg);
     
-    void sendData(uint addr, uint data);
+    void sendData(uint8_t addr, uint8_t data);
     
-    uint singleRead(uint addr);
+    uint singleRead(uint8_t addr);
     
-    int write(uint addr, uint* buffer, int len);
+    int write(uint8_t addr, uint8_t* buffer, uint16_t len);
 };
 #endif	/* SPI1_H */
 
