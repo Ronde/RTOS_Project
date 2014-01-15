@@ -15,6 +15,7 @@ SUBDIRS := miosix
 ##
 SRC :=                                  \
 main.cpp\
+pedometer\
 lis302dl.cpp\
 spi1.cpp
 ##
