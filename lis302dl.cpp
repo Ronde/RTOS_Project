@@ -12,16 +12,19 @@
 #include "lis302dl.h"
 #include "spi1.h"
 #include "lis302dl_reg.h"
+#include "serial.h"//Rimuovere a fine test
 
 using namespace std;
 using namespace miosix;
 Spi spi;
+SerialPort serial2;
 
 Lis302dl::Lis302dl(){}
 /*
  * Private function that set the accelerometer registers
  */
 void Lis302dl::memsConfig(){
+    serial2.test();
     uint8_t val;
     spi.config();
     val = CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN

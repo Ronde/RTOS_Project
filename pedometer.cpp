@@ -12,6 +12,7 @@
 #include "miosix.h"
 #include "lis302dl.h"
 #include "pedometer.h"
+#include "serial.h"
 
 #define LIMIT 120
 #define SOUND_FREQUENCY 50
@@ -29,6 +30,7 @@ int step=0;
 unsigned Sensitivity = LIMIT, old_Sensitivity = 0, Hysteresis = LIMIT/4, old_Hysteresis = 0;
 int16_t x, y, z;
 Lis302dl lis302dl;
+SerialPort serial;
 tState currentState= onPause;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
@@ -83,6 +85,7 @@ void Pedometer::stepCounter(){
 
 void Pedometer::takeAverage(){
     lis302dl.getMemsData(&x,&y,&z);
+    ledGreen();
     average(&average4,4);
     average(&average16,16);
 }
@@ -122,10 +125,3 @@ void Pedometer::ledGreen(){
     greenLed::low();
     usleep(1000000);
 }
-
-/*
-void writeData(){
-    char str[24]="x: "+x+"\ny: "+y+"\nz: "+z"\n";
-    serial.write(str);
-}
-*/
