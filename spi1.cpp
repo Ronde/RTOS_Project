@@ -13,6 +13,7 @@
 #include "spi1_reg.h"
 #include "address_b.h"
 #include "utility.h"
+#include "stm32f4xx.h"
 
 #define ALTERNATE_FUNCTION_SPI1 5
 
@@ -35,15 +36,32 @@ Spi::Spi(){
 void Spi::config()
 {
     utility_s->test();
+    
+    /* Enable the SPI periph */
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+    
+    /* SPI SCK MOSI MISO pin configuration */
     SCK::mode(Mode::ALTERNATE);
     SCK::alternateFunction(ALTERNATE_FUNCTION_SPI1);
+    SCK::speed(Speed::_50MHz);
+    
     MISO::mode(Mode::ALTERNATE);
     MISO::alternateFunction(ALTERNATE_FUNCTION_SPI1);
+    SCK::speed(Speed::_50MHz);
+    
     MOSI::mode(Mode::ALTERNATE);
     MOSI::alternateFunction(ALTERNATE_FUNCTION_SPI1);
-    CS::mode(Mode::ALTERNATE);
+    SCK::speed(Speed::_50MHz);
+    
+    //QUI MANCA IL DRIVER DEL SPI!!!!!
+    
+    /* Configure GPIO PIN for Lis Chip select */
+    CS::mode(Mode::OUTPUT);
     CS::alternateFunction(ALTERNATE_FUNCTION_SPI1);
+    SCK::speed(Speed::_50MHz);
+    
+    csOff();
+    
     spi_typedef_pun=SPI2;
 }
 
@@ -53,15 +71,13 @@ uint16_t Spi::reciveData(){
 }
 
 void Spi::csOn(){
-    
-    spi_typedef_pun->CR1 |= SSM | SPE;
-    
+    //spi_typedef_pun->CR1 |= SSM | SPE;
+    CS::low();
 }
 
 void Spi::csOff(){
- 
-    spi_typedef_pun->CR1 &= !(SSM) & !(SPE);
-    
+    //spi_typedef_pun->CR1 &= !(SSM | SPE);
+    CS::high();
 }
 
 uint16_t Spi::isBusy(int reg){
@@ -78,7 +94,7 @@ void Spi::sendData(uint16_t addr, uint8_t data){
 
 int16_t Spi::singleRead(uint8_t addr){
     
-    addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
+    addr &= !(SPI_READ |SPI_MULTI_OP);
     
     int readed = 0;
     addr |= SPI_READ;
@@ -115,7 +131,7 @@ int16_t Spi::singleRead(uint8_t addr){
    
 int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 
-        addr &= (!(SPI_READ) && !(SPI_MULTI_OP));
+        addr &= !(SPI_READ |SPI_MULTI_OP);
 	
 	if(len <= 0){
                 return -1;
