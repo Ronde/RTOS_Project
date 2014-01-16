@@ -10,8 +10,7 @@
 #include <cstdio>
 #include "miosix.h"
 #include "spi1.h"
-#include "spi1_reg.h"
-#include "address_b.h"
+#include "spi1_constant.h"
 #include "utility.h"
 #include "stm32f4xx.h"
 
@@ -24,7 +23,7 @@ typedef Gpio<GPIOA_BASE, 5> SCK;
 typedef Gpio<GPIOA_BASE, 6> MISO;
 typedef Gpio<GPIOA_BASE, 7> MOSI;
 typedef Gpio<GPIOE_BASE, 3> CS;
-SPI_TypeDef* spi_typedef_pun;
+SPI_TypeDef* spi_typedef_pun=SPI1;
 Utility* utility_s;
 
 Spi::Spi(){
@@ -36,10 +35,9 @@ Spi::Spi(){
 void Spi::config()
 {
     utility_s->test();
-    
-    /* Enable the SPI periph */
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
     
+    //-----------------------------------------------------------------------
     /* SPI SCK MOSI MISO pin configuration */
     SCK::mode(Mode::ALTERNATE);
     SCK::alternateFunction(ALTERNATE_FUNCTION_SPI1);
@@ -53,21 +51,30 @@ void Spi::config()
     MOSI::alternateFunction(ALTERNATE_FUNCTION_SPI1);
     SCK::speed(Speed::_50MHz);
     
-    //QUI MANCA IL DRIVER DEL SPI!!!!!
+    //-----------------------------------------------------------------------
     
+    /* Enable the SPI periph (Guardare enable per settare)*/
+    uint16_t tmpreg = 0;
+    tmpreg= (uint16_t)spi_typedef_pun->CR1;
+    tmpreg |= (uint16_t)(SPI_Direction | SPI_Mode | SPI_DataSize | SPI_CPOL |  
+                  SPI_CPHA | SPI_NSS |  SPI_BaudRatePrescaler | SPI_FirstBit);
+    /* Write to SPIx CR1 */
+    spi_typedef_pun->CR1 = tmpreg;
+
+    /* Activate the SPI mode (Reset I2SMOD bit in I2SCFGR register) */
+    spi_typedef_pun->I2SCFGR &= (uint16_t)!((uint16_t)SPI_I2SCFGR_I2SMOD);
+    /* Write to SPIx CRCPOLY */
+    spi_typedef_pun->CRCPR = SPI_CRCPolynomial;
+    
+    spi_typedef_pun->CR1 |= SPI_CR1_SPE;
+    
+    //-----------------------------------------------------------------------
     /* Configure GPIO PIN for Lis Chip select */
     CS::mode(Mode::OUTPUT);
     CS::alternateFunction(ALTERNATE_FUNCTION_SPI1);
     SCK::speed(Speed::_50MHz);
     
     csOff();
-    
-    spi_typedef_pun=SPI2;
-}
-
-uint16_t Spi::reciveData(){
-    
-      return spi_typedef_pun->DR;
 }
 
 void Spi::csOn(){
@@ -80,48 +87,53 @@ void Spi::csOff(){
     CS::high();
 }
 
-uint16_t Spi::isBusy(int reg){
+uint16_t Spi::reciveData(){
     
-    return spi_typedef_pun->SR >> reg;
+      return spi_typedef_pun->DR;
+}
+
+void Spi::sendData(uint8_t data){
+    
+    spi_typedef_pun->DR = data;
     
 }
 
-void Spi::sendData(uint16_t addr, uint8_t data){
+uint16_t Spi::isBusy(int reg){
     
-    addr |= data;
+    if((spi_typedef_pun->SR & reg) != (uint16_t)RESET){
+        return 0;
+    }
+    return 1;
     
 }
 
 int16_t Spi::singleRead(uint8_t addr){
     
-    addr &= !(SPI_READ |SPI_MULTI_OP);
-    
-    int readed = 0;
-    addr |= SPI_READ;
+        uint8_t readed = 0;
+        addr |= SPI_READ;
     
     /* Transmission start: pull CS low */
-	csOn();
-	
+        csOn();
+        
 	/* Send address */
-	while(isBusy(SPI_TXE) == RESET){}
-	sendData(spi_typedef_pun->DR, addr);
-			
-	/* Dummy read to make sure shift register is empty.
-	 * Note that TXE=1 just tells the Transmit Buffer is empty
-	 * and therefore new data can be put in Data Register, not
-	 * that actual data on Shift Register has all been put on wire.
-	 */
-	while(isBusy(SPI_RXNE)){}
-	
-       reciveData();  
+        while(isBusy(SPI_SR_TXE));
+	sendData(addr);
+        
+        /* Dummy read to make sure shift register is empty.
+         * Note that TXE=1 just tells the Transmit Buffer is empty
+         * and therefore new data can be put in Data Register, not
+         * that actual data on Shift Register has all been put on wire.
+         */
+        while(isBusy(SPI_SR_RXNE)){}
+        reciveData();
 
         /* Dummy write */
-	while(isBusy(SPI_TXE)){}
-	sendData(spi_typedef_pun->DR, 0xff);
-	      
-	/* Actual read */
-	while(isBusy(SPI_RXNE)){}
-	readed = reciveData();
+        while(isBusy(SPI_SR_TXE)){}
+        sendData((uint8_t)0x00);
+              
+        /* Actual read */
+        while(isBusy(SPI_SR_RXNE)){}
+        readed = reciveData();
 
 	/* Transmission end: pull CS high */
 	csOff();
@@ -131,8 +143,6 @@ int16_t Spi::singleRead(uint8_t addr){
    
 int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 
-        addr &= !(SPI_READ |SPI_MULTI_OP);
-	
 	if(len <= 0){
                 return -1;
         }
@@ -146,28 +156,26 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
 	csOn();
 	
 	/* Send address */
-	while(isBusy(SPI_BSY)){}
+        while(isBusy(SPI_SR_TXE)){}
+        sendData(addr);
         
-	sendData(spi_typedef_pun->DR, addr);
-	
-	/* Wait data hits slave */ 
-	while(isBusy(SPI_RXNE)) {}
-        
-	reciveData();
-		
-	/* Send data */
-	while(len--){
-		while(isBusy(SPI_TXE)){}
+        /* Wait data hits slave */ 
+        while(isBusy(SPI_SR_RXNE)) {}
+        reciveData();
                 
-		sendData(spi_typedef_pun->DR, *buffer++);
-			
-		while(isBusy(SPI_RXNE));
+        /* Send data */
+        while(len--){
+                while(isBusy(SPI_SR_TXE)){}
                 
-		reciveData();
-	}
+                sendData(*buffer++);
+                        
+                while(isBusy(SPI_SR_RXNE));
+                
+                reciveData();
+        }
 
-	/* Transmission end: pull CS high */
-	csOff();
-	
-	return 0;
+        /* Transmission end: pull CS high */
+        csOff();
+        
+        return 0;
 }

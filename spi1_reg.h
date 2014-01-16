@@ -17,12 +17,8 @@
 #define LSB_FIRST       1<<7
 #define SSI             1<<8
 #define MSTR            1<<2
-#define SPE             1<<6
-#define SSM             1<<9
-
-#define SPI_RXNE        0
-#define SPI_BSY         7
-#define SPI_TXE         1
+//#define SPE             1<<6
+//#define SSM             1<<9
 
 #endif	/* SPI1_REG_H */
 

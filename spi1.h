@@ -27,7 +27,7 @@ public:
     
     uint16_t isBusy(int reg);
     
-    void sendData(uint16_t addr, uint8_t data);
+    void sendData(uint8_t data);
     
     int16_t singleRead(uint8_t addr);
     
