@@ -38,16 +38,19 @@ Pedometer::Pedometer(){
 }
 
 void Pedometer::start(){
-   
+    
+    utility_p->ledRed();
+    
     lis302dl.memsConfig();
     
+    utility_p->ledRed();
+            
     while(true){
-        utility_p->ledBlue();
+        
         takeAverage();
-        utility_p->ledRed();
+        
         //writeData();
         stepCounter();
-        utility_p->ledRed();
         }
 }
 
@@ -67,19 +70,18 @@ void Pedometer::stepCounter(){
         //Now we switch from the 'OnMove' state to 'On Pause' (and vice versa) with a small hysteresis
         if ( (test< (Sensitivity - (Hysteresis/2) ) ) && (currentState == onMove) )
                 {
-                step++;
-                utility_p->ledBlue();
+                incrementStep();
                 currentState = onPause;
                 }
         else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause) )
                 {
                 currentState = onMove;
                 }
+        utility_p->test(x,y,z,step,test);
 }
 
 void Pedometer::takeAverage(){
     lis302dl.getMemsData(&x,&y,&z);
-    utility_p->ledGreen();
     average(&average4,4);
     average(&average16,16);
 }
@@ -92,6 +94,7 @@ void Pedometer::average(Average* average,int num){
 
 void Pedometer::incrementStep(){
     step++;
+    utility_p->ledBlue();
     //if(!(step%50)) evviva(step);
 }
 

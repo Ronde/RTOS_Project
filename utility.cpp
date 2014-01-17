@@ -10,8 +10,9 @@
 
 #include "utility.h"
 #include <iostream>
+#include <cstdio>
 #include "miosix.h"
-#include "serial.h"
+#include <string.h>
 
 using namespace std;
 using namespace miosix;
@@ -21,12 +22,12 @@ Utility* Utility::utility = NULL;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
 typedef Gpio<GPIOD_BASE,12> greenLed;
-SerialPort serial;
 
 Utility::Utility(){
     blueLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     greenLed::mode(Mode::OUTPUT);
+    
 }
 
 Utility* Utility::getInstance()
@@ -64,8 +65,12 @@ void Utility::ledGreen(){
     usleep(1000000);
 }
 
-void Utility::test(){
-    char str[24]="Sono passato qui:  \r\n";
-    serial.write(str);
+void Utility::test(int16_t x,int16_t y,int16_t z,int step,long unsigned test){
+    
+    printf("x: %i\t",x);
+    printf("y: %i\t",y);
+    printf("z: %i\t",z);
+    printf("step: %i\t",step);
+    printf("test: %i\n",test);
+    
 }
-

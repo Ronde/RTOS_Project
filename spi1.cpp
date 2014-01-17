@@ -15,6 +15,8 @@
 #include "stm32f4xx.h"
 
 #define ALTERNATE_FUNCTION_SPI1 5
+#define SPIg SPI1
+
 
 using namespace std;
 using namespace miosix;
@@ -23,7 +25,7 @@ typedef Gpio<GPIOA_BASE, 5> SCK;
 typedef Gpio<GPIOA_BASE, 6> MISO;
 typedef Gpio<GPIOA_BASE, 7> MOSI;
 typedef Gpio<GPIOE_BASE, 3> CS;
-SPI_TypeDef* spi_typedef_pun=SPI1;
+
 Utility* utility_s;
 
 Spi::Spi(){
@@ -34,9 +36,8 @@ Spi::Spi(){
  */
 void Spi::config()
 {
-    utility_s->test();
-    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
     
+    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
     //-----------------------------------------------------------------------
     /* SPI SCK MOSI MISO pin configuration */
     SCK::mode(Mode::ALTERNATE);
@@ -53,21 +54,24 @@ void Spi::config()
     
     //-----------------------------------------------------------------------
     
+    /*Deinitialize the SPIx peripheral registers*/
+    RCC->APB2RSTR |= RCC_APB2ENR_SPI1EN;
+    RCC->APB2RSTR &= !(RCC_APB2ENR_SPI1EN);
+    
     /* Enable the SPI periph (Guardare enable per settare)*/
     uint16_t tmpreg = 0;
-    tmpreg= (uint16_t)spi_typedef_pun->CR1;
+    tmpreg= (uint16_t)SPIg->CR1;
     tmpreg |= (uint16_t)(SPI_Direction | SPI_Mode | SPI_DataSize | SPI_CPOL |  
                   SPI_CPHA | SPI_NSS |  SPI_BaudRatePrescaler | SPI_FirstBit);
     /* Write to SPIx CR1 */
-    spi_typedef_pun->CR1 = tmpreg;
+    SPIg->CR1 = tmpreg;
 
     /* Activate the SPI mode (Reset I2SMOD bit in I2SCFGR register) */
-    spi_typedef_pun->I2SCFGR &= (uint16_t)!((uint16_t)SPI_I2SCFGR_I2SMOD);
+    SPIg->I2SCFGR &= (uint16_t)!((uint16_t)SPI_I2SCFGR_I2SMOD);
     /* Write to SPIx CRCPOLY */
-    spi_typedef_pun->CRCPR = SPI_CRCPolynomial;
+    SPIg->CRCPR = SPI_CRCPolynomial;
     
-    spi_typedef_pun->CR1 |= SPI_CR1_SPE;
-    
+    SPIg->CR1 |= SPI_CR1_SPE;
     //-----------------------------------------------------------------------
     /* Configure GPIO PIN for Lis Chip select */
     CS::mode(Mode::OUTPUT);
@@ -89,18 +93,18 @@ void Spi::csOff(){
 
 uint16_t Spi::reciveData(){
     
-      return spi_typedef_pun->DR;
+      return SPIg->DR;
 }
 
 void Spi::sendData(uint8_t data){
     
-    spi_typedef_pun->DR = data;
+    SPIg->DR = data;
     
 }
 
 uint16_t Spi::isBusy(int reg){
     
-    if((spi_typedef_pun->SR & reg) != (uint16_t)RESET){
+    if((SPIg->SR & (uint16_t)reg) != (uint16_t)RESET){
         return 0;
     }
     return 1;
@@ -116,7 +120,7 @@ int16_t Spi::singleRead(uint8_t addr){
         csOn();
         
 	/* Send address */
-        while(isBusy(SPI_SR_TXE));
+        while(isBusy(SPI_SR_TXE)){}
 	sendData(addr);
         
         /* Dummy read to make sure shift register is empty.
@@ -142,7 +146,7 @@ int16_t Spi::singleRead(uint8_t addr){
 }
    
 int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
-
+    
 	if(len <= 0){
                 return -1;
         }
@@ -154,7 +158,6 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
         
 	/* pull CS low to start trasmission */
 	csOn();
-	
 	/* Send address */
         while(isBusy(SPI_SR_TXE)){}
         sendData(addr);
@@ -162,14 +165,14 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
         /* Wait data hits slave */ 
         while(isBusy(SPI_SR_RXNE)) {}
         reciveData();
-                
+        
         /* Send data */
         while(len--){
                 while(isBusy(SPI_SR_TXE)){}
                 
                 sendData(*buffer++);
                         
-                while(isBusy(SPI_SR_RXNE));
+                while(isBusy(SPI_SR_RXNE)){}
                 
                 reciveData();
         }

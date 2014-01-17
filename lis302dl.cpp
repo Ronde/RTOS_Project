@@ -26,7 +26,6 @@ Lis302dl::Lis302dl(){
  * Private function that set the accelerometer registers
  */
 void Lis302dl::memsConfig(){
-    utility_l->test();
     uint8_t val=0x00;
     spi.config();
     val = CTRL_REG1_XEN | CTRL_REG1_YEN  | CTRL_REG1_ZEN | CTRL_REG1_FSEN

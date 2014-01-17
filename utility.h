@@ -7,6 +7,7 @@
 
 #ifndef UTILITY_H
 #define	UTILITY_H
+#include "types.h"
 
 class Utility
 {
@@ -20,7 +21,7 @@ public:
     void ledBlue();
     void ledRed();
     void ledGreen();
-    void test();
+    void test(int16_t x,int16_t y,int16_t z,int step,long unsigned test);
     ~Utility()
     {
         instanceFlag = false;

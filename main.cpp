@@ -9,6 +9,7 @@
  */
 
 #include <cstdlib>
+#include <cstdio>
 #include "pedometer.h"
 
 using namespace std;
