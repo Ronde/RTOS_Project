@@ -13,9 +13,9 @@
 #include "lis302dl.h"
 #include "pedometer.h"
 #include "utility.h"
+#include <math.h>
 
-#define LIMIT 120
-#define SOUND_FREQUENCY 50
+#define LIMIT  120
 
 using namespace std;
 using namespace miosix;
@@ -35,11 +35,24 @@ Utility* utility_p;
 
 Pedometer::Pedometer(){
     utility_p=Utility::getInstance();
+    
+    average4.x=0;
+    average4.y=0;
+    average4.z=0;
+    average16.x=0;
+    average16.y=0;
+    average16.z=0;
+    
+    for(int i=0;i<16;i++){
+        data.lastDataX[i]=0;
+        data.lastDataY[i]=0;
+        data.lastDataZ[i]=0;
+    }
 }
 
 void Pedometer::start(){
     
-    utility_p->ledRed();
+    utility_p->ledGreen();
     
     lis302dl.memsConfig();
     
@@ -49,7 +62,6 @@ void Pedometer::start(){
         
         takeAverage();
         
-        //writeData();
         stepCounter();
         }
 }
@@ -64,6 +76,7 @@ void Pedometer::stepCounter(){
         unsigned dx =  average4.x - average16.x ; 
         unsigned dy =  average4.y - average16.y ; 
         unsigned dz =  average4.z - average16.z ; 
+        
         long unsigned test = ( dx*dx + dy*dy + dz*dz ) / 64 ;       
         // amplitude of the delta is calculated as the sum of the squares.
 
@@ -73,23 +86,55 @@ void Pedometer::stepCounter(){
                 incrementStep();
                 currentState = onPause;
                 }
-        else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause) )
+        else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause))
                 {
                 currentState = onMove;
                 }
-        utility_p->test(x,y,z,step,test);
+        
+        utility_p->test(dx,dy,dz,step,test);
+        
 }
 
 void Pedometer::takeAverage(){
     lis302dl.getMemsData(&x,&y,&z);
+    updateData();
     average(&average4,4);
     average(&average16,16);
 }
 
+void Pedometer::updateData(){
+    
+    /*Shift a destra*/
+    for(int i=15;i>0;i--){
+        data.lastDataX[i]=data.lastDataX[i-1];
+        data.lastDataY[i]=data.lastDataY[i-1];
+        data.lastDataZ[i]=data.lastDataZ[i-1];
+    }
+    
+    /*Aggiunta nuovo dato*/
+    data.lastDataX[0]=x;
+    data.lastDataY[0]=y;
+    data.lastDataZ[0]=z;
+}
+
 void Pedometer::average(Average* average,int num){
-    average->x=(average->x*(num-1)+x)/num;
-    average->y=(average->y*(num-1)+y)/num;
-    average->z=(average->z*(num-1)+y)/num;
+    int sumX=0,sumY=0,sumZ=0;
+    
+    /*Somma*/
+    for(int i=0;i<num;i++){
+        sumX +=data.lastDataX[i];
+        sumY +=data.lastDataY[i];
+        sumZ +=data.lastDataZ[i];
+    }
+    
+    /*Media*/
+    float averageXf=(float)sumX/(float)num;
+    float averageYf=(float)sumY/(float)num;
+    float averageZf=(float)sumZ/(float)num;
+   
+    average->x=(int16_t)(averageXf+0.5);
+    average->y=(int16_t)(averageYf+0.5);
+    average->z=(int16_t)(averageZf+0.5);
 }
 
 void Pedometer::incrementStep(){
@@ -100,4 +145,37 @@ void Pedometer::incrementStep(){
 
 int Pedometer::getStep(){
     return step;
+}
+
+void Pedometer::mediaPrint(){
+        printf("\nmedia4x: %i\t",average4.x);
+        printf("media16x: %i\t",average16.x);
+        printf("media4y: %i\t",average4.y);
+        printf("media16y: %i\t",average16.y);
+        printf("media4z: %i\t",average4.z);
+        printf("media16z: %i\t",average16.z);
+}
+
+void Pedometer::dataXPrint(){
+    printf("x: %i dataX: ",x);
+    for(int i=0;i<15;i++){
+        printf("%i",data.lastDataX[i]);
+    }
+    printf("\n");
+}
+    
+void Pedometer::dataYPrint(){
+    printf("y: %i dataY: ",y);
+    for(int i=0;i<15;i++){
+        printf("%i",data.lastDataY[i]);
+    }
+    printf("\n");
+}
+
+void Pedometer::dataZPrint(){
+    printf("z: %i dataZ: ",z);
+    for(int i=0;i<15;i++){
+        printf("%i",data.lastDataZ[i]);
+    }
+    printf("\n");
 }

@@ -46,31 +46,31 @@ Utility* Utility::getInstance()
 
 void Utility::ledBlue(){
     blueLed::high();
-    usleep(1000000);
+    usleep(100000);
     blueLed::low();
-    usleep(1000000);
+    usleep(100000);
 }
 
 void Utility::ledRed(){
     redLed::high();
-    usleep(1000000);
+    usleep(100000);
     redLed::low();
-    usleep(1000000);
+    usleep(100000);
 }
 
 void Utility::ledGreen(){
     greenLed::high();
-    usleep(1000000);
+    usleep(100000);
     greenLed::low();
-    usleep(1000000);
+    usleep(100000);
 }
 
 void Utility::test(int16_t x,int16_t y,int16_t z,int step,long unsigned test){
     
-    printf("x: %i\t",x);
-    printf("y: %i\t",y);
-    printf("z: %i\t",z);
+    printf("\nx: %d\t",x);
+    printf("y: %d\t",y);
+    printf("z: %d\t",z);
     printf("step: %i\t",step);
-    printf("test: %i\n",test);
+    printf("test: %d",test);
     
 }
