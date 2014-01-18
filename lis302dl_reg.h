@@ -1,7 +1,8 @@
 /* 
  * File:   lis302dl_reg.h
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  \brief     This file contains all the constants used in lis302dl class, 
+ *             included the value used to configure the accelerometer register
+ *  \details   
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0

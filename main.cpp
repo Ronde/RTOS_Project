@@ -17,7 +17,7 @@ using namespace std;
 Pedometer pedometer;
 
 /*
- * 
+ * Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
     pedometer.start();

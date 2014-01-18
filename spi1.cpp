@@ -1,7 +1,14 @@
 /* 
- * File:   spi1.cpp
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  \File:     spi1.cpp
+ *  \brief     This file contains all the methods to initialize, read and write 
+ *             on SPI1 bus.
+ *  \details   This file contains 4 public methods:
+ *             -SPI() that is the class constructor
+ *             -config() that sets up all the CPU register to use the SPI1 to 
+ *                       send and receive information from the on board accelerometer
+ *             -singleRead() that read the 8 bit sent by the accelerometer
+ *             -write() that send single or multiple 8-bit information to the 
+ *                      accelerometer
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0
@@ -32,13 +39,13 @@ Spi::Spi(){
     utility_s=Utility::getInstance();
 }
 /**
- * This function sets up all the GPIO used for the accelerometer.
+ *  This function sets up all the CPU register to enable the SPI1 interface;
  */
 void Spi::config()
 {
     
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-    //-----------------------------------------------------------------------
+    //-------------------------------------------------------------------\\
     /* SPI SCK MOSI MISO pin configuration */
     SCK::mode(Mode::ALTERNATE);
     SCK::alternateFunction(ALTERNATE_FUNCTION_SPI1);
@@ -52,13 +59,13 @@ void Spi::config()
     MOSI::alternateFunction(ALTERNATE_FUNCTION_SPI1);
     SCK::speed(Speed::_50MHz);
     
-    //-----------------------------------------------------------------------
+    //-------------------------------------------------------------------\\
     
-    /*Deinitialize the SPIx peripheral registers*/
+    /*resets the SPIx peripheral registers*/
     RCC->APB2RSTR |= RCC_APB2ENR_SPI1EN;
     RCC->APB2RSTR &= !(RCC_APB2ENR_SPI1EN);
     
-    /* Enable the SPI periph (Guardare enable per settare)*/
+    /* Enable the SPI peripheral (Guardare enable per settare)*/
     uint16_t tmpreg = 0;
     tmpreg= (uint16_t)SPIg->CR1;
     tmpreg |= (uint16_t)(SPI_Direction | SPI_Mode | SPI_DataSize | SPI_CPOL |  
@@ -72,7 +79,7 @@ void Spi::config()
     SPIg->CRCPR = SPI_CRCPolynomial;
     
     SPIg->CR1 |= SPI_CR1_SPE;
-    //-----------------------------------------------------------------------
+    //---------------------------------------------------------------------\\
     /* Configure GPIO PIN for Lis Chip select */
     CS::mode(Mode::OUTPUT);
     CS::alternateFunction(ALTERNATE_FUNCTION_SPI1);
@@ -81,27 +88,44 @@ void Spi::config()
     csOff();
 }
 
+/*
+ *   This function sets the chip select bit 
+ */
 void Spi::csOn(){
     //spi_typedef_pun->CR1 |= SSM | SPE;
     CS::low();
 }
 
+/*
+ * This function reset the chip select bit
+ */
 void Spi::csOff(){
     //spi_typedef_pun->CR1 &= !(SSM | SPE);
     CS::high();
 }
 
+/*
+ * This function returns the value of Data Register.
+ * In Data Register there is stored the last information received on SPI
+ */
 uint16_t Spi::reciveData(){
     
       return SPIg->DR;
 }
 
+/*
+ * This function write in Data Register the information that have to be sent 
+ * on SPI
+ */
 void Spi::sendData(uint8_t data){
     
     SPIg->DR = data;
     
 }
 
+/*
+ * This function returns 1 if the bus associated to reg parameter is busy
+ */
 uint16_t Spi::isBusy(int reg){
     
     if((SPIg->SR & (uint16_t)reg) != (uint16_t)RESET){
@@ -111,22 +135,23 @@ uint16_t Spi::isBusy(int reg){
     
 }
 
+/*
+ * this function perform a single read on SPI
+ */
 int16_t Spi::singleRead(uint8_t addr){
     
         uint8_t readed = 0;
         addr |= SPI_READ;
     
-    /* Transmission start: pull CS low */
+        /* Transmission start: pull CS low */
         csOn();
         
 	/* Send address */
         while(isBusy(SPI_SR_TXE)){}
 	sendData(addr);
         
-        /* Dummy read to make sure shift register is empty.
-         * Note that TXE=1 just tells the Transmit Buffer is empty
-         * and therefore new data can be put in Data Register, not
-         * that actual data on Shift Register has all been put on wire.
+        /* 
+         * Dummy read to make sure shift register is empty.
          */
         while(isBusy(SPI_SR_RXNE)){}
         reciveData();
@@ -144,9 +169,13 @@ int16_t Spi::singleRead(uint8_t addr){
 
 	return readed;
 }
-   
+
+/*
+ * This function perform the needed write on SPI
+ */
 int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
-    
+        
+        /*Invalid length*/
 	if(len <= 0){
                 return -1;
         }
@@ -158,6 +187,7 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
         
 	/* pull CS low to start trasmission */
 	csOn();
+        
 	/* Send address */
         while(isBusy(SPI_SR_TXE)){}
         sendData(addr);
@@ -168,6 +198,7 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
         
         /* Send data */
         while(len--){
+                
                 while(isBusy(SPI_SR_TXE)){}
                 
                 sendData(*buffer++);
@@ -177,8 +208,9 @@ int Spi::write(uint8_t addr, uint8_t* buffer, uint16_t len){
                 reciveData();
         }
 
-        /* Transmission end: pull CS high */
+        /* Reset cs at the end of transmission */
         csOff();
         
+        /*all went good*/
         return 0;
 }

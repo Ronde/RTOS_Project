@@ -1,8 +1,12 @@
 /* 
- * File:   address_b.h
- * Author: user
- *
- * Created on January 13, 2014, 2:16 PM
+ *  File:      spi1_constant.h
+ *  \brief     This file contains the definition of all the constants used in
+ *             the spi1 class
+ *  \details   
+ *  \author    Omar Scotti
+ *  \author    Diego Rondelli
+ *  \version   1.0
+ *  \date      10/01/2014
  */
 
 #ifndef ADDRESS_B_H

@@ -1,7 +1,8 @@
 /* 
- * File:   spi1_reg.h
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ * File:       spi1_reg.h
+ *  \brief     This file contains the definition of all the  
+ *             constants used in spi1 class to sets the CPU registers
+ *  \details   
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0

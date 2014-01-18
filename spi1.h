@@ -1,7 +1,7 @@
 /* 
- * File:   spi1.h
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  File:      spi1.h
+ *  \brief     This is the header file for the spi1 class
+ *  \details   
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0
@@ -19,6 +19,12 @@ public:
     
     void config();
     
+    int16_t singleRead(uint8_t addr);
+    
+    int write(uint8_t addr, uint8_t* buffer, uint16_t len);
+    
+private:
+    
     uint16_t reciveData();
     
     void csOn();
@@ -29,9 +35,6 @@ public:
     
     void sendData(uint8_t data);
     
-    int16_t singleRead(uint8_t addr);
-    
-    int write(uint8_t addr, uint8_t* buffer, uint16_t len);
 };
 #endif	/* SPI1_H */
 
