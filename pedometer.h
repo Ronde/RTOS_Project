@@ -1,7 +1,7 @@
-/* 
+/**
  * File:   pedometer.h
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  \brief     This file is the header file for the class pedometer
+ * 
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0

@@ -1,7 +1,10 @@
-/* 
+/**
  *  File:      types.h
  *  \brief     This file contains the definition of the type used uint8_t, uint16_t and int16_t
- *  \details   
+ * 
+ *  \details   The type defined in this header file are used to transfer the 
+ *             information stored into CPU and accelerometer registers
+ * 
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0

@@ -1,8 +1,10 @@
-/* 
+/**
  * File:   Utility.h
- * Author: user
- *
- * Created on 15 gennaio 2014, 23.03
+ *  \author     Omar Scotti
+ *  \author     Diego Rondelli
+ *  \brief      This file is the header file for the Utility class 
+ *  \version    1.0
+ *  \date       16/01/2014 
  */
 
 #ifndef UTILITY_H

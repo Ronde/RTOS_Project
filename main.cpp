@@ -1,7 +1,6 @@
-/* 
+/**
  * File:   lis302dl.cpp
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  \brief     main class. It only starts the program
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0

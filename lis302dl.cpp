@@ -1,4 +1,4 @@
-/* 
+/**
  * File:   lis302dl.cpp
  *  \brief     This class contains the methods to sets up the accelerometer and
  *             read his data
@@ -25,14 +25,17 @@ using namespace miosix;
 Spi spi;
 Utility* utility_l;
 
-/*
+/**
  * Class constructor
  */
 Lis302dl::Lis302dl(){
     utility_l=Utility::getInstance();
 }
-/*
- * Private function that set the accelerometer registers
+/**
+ * this function configure the SPI and write on it the configuration parameters
+ * for the accelerometer
+ * @param void
+ * @returns void
  */
 void Lis302dl::memsConfig(){
     uint8_t val=0x00;
@@ -41,8 +44,12 @@ void Lis302dl::memsConfig(){
             | CTRL_REG1_PDEN;
     spi.write(CTRL_REG1, &val, 1);
 }
-/*
- * This function perform a read for the accelerations for x,y,z axes  
+/**
+ * This function perform a read for the accelerations for x,y,z axes
+ * @param x pointer to x variable
+ * @param y pointer to y variable
+ * @param z pointer to z variable
+ * @return void
  */
 void  Lis302dl::getMemsData(int16_t* x, int16_t* y, int16_t* z)
 {	

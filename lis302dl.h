@@ -1,4 +1,4 @@
-/* 
+/**
  * File:   lis302dl.h
  *  \brief     This is the Header file for the lis302dl class
  *  \details   

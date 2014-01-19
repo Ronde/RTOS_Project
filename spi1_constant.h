@@ -1,4 +1,4 @@
-/* 
+/**
  *  File:      spi1_constant.h
  *  \brief     This file contains the definition of all the constants used in
  *             the spi1 class

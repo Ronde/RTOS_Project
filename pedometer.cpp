@@ -1,4 +1,4 @@
-/* 
+/**
  * File:   pedometer.cpp
  *  \brief     INTRO VELOCE
  *  \details   DETTAGLI
