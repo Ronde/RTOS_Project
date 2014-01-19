@@ -104,12 +104,14 @@ void Utility::ledGreen(){
  * @param test
  * @return void
  */
-void Utility::test(int16_t x,int16_t y,int16_t z,int step,long unsigned test){
+void Utility::test(int16_t x,int16_t y,int16_t z,int step,int accelleration,int aMax, int limit){
     
-    printf("\nx: %d\t",x);
-    printf("y: %d\t",y);
-    printf("z: %d\t",z);
-    printf("step: %i\t",step);
-    printf("test: %d",test);
+    printf("\ndx: %d\t",x);
+    printf("dy: %d\t",y);
+    printf("dz: %d\t",z);
+    printf("aMax: %i\t",aMax);
+    printf("limit: %i\t",limit);
+    printf("accelleration: %i\t",accelleration);
+    printf("step: %i",step);
     
 }

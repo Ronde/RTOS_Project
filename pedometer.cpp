@@ -16,7 +16,9 @@
 #include "utility.h"
 #include <math.h>
 
-#define LIMIT  120
+#define LIMIT   180
+#define R       2
+#define RANGE   256
 
 using namespace std;
 using namespace miosix;
@@ -30,8 +32,7 @@ typedef enum
    onMove  = 1
     } tState ;
 
-int step=0;
-unsigned Sensitivity = LIMIT, old_Sensitivity = 0, Hysteresis = LIMIT/4, old_Hysteresis = 0;
+int step,xt,yt,zt,limit,accelleration,aMax,dataLimit;
 int16_t x, y, z;
 Lis302dl lis302dl;
 tState currentState= onPause;
@@ -55,6 +56,13 @@ Pedometer::Pedometer(){
         data.lastDataY[i]=0;
         data.lastDataZ[i]=0;
     }
+    xt=0;
+    yt=0;
+    zt=0;
+    step=0;
+    aMax=16;
+    accelleration=0;
+    limit=LIMIT;
 }
 
 /**
@@ -90,21 +98,42 @@ void Pedometer::stepCounter(){
         unsigned dy =  average4.y - average16.y ; 
         unsigned dz =  average4.z - average16.z ; 
         
-        long unsigned test = ( dx*dx + dy*dy + dz*dz ) / 64 ;       
-        // amplitude of the delta is calculated as the sum of the squares.
+        //Calcolo il modulo dell'accellerazione
+        float accellerationF = sqrt( (float)(dx*dx + dy*dy + dz*dz )) ;  
+        accelleration=(int)(accellerationF+0.5);
+        
+        //Setto il valore massimo ed il minimo dell'accellerazione
+        accMax();
+        
+        
+        dataLimit++;
+                    
+        //Ogni 100 valori ricalcolo il limite. Limite dinamico
+        if(dataLimit==100){
+                        limit=aMax-15;
+                        aMax=195;
+                        dataLimit=0;
+                    }
+        
 
         //Now we switch from the 'OnMove' state to 'On Pause' (and vice versa) with a small hysteresis
-        if ( (test< (Sensitivity - (Hysteresis/2) ) ) && (currentState == onMove) )
+        if ( (accelleration< limit ) && (currentState == onMove) )
                 {
-                incrementStep();
                 currentState = onPause;
-                }
-        else if ( (test>=Sensitivity + (Hysteresis/2) ) && (currentState == onPause))
+                
+                if((fabs(x-xt)<=R || fabs(x-xt)>=RANGE-R) && (fabs(y-yt)<=R || fabs(y-yt)>=RANGE-R) && (fabs(z-zt)<=R || fabs(z-zt)>=RANGE-R)){
+                    incrementStep();
+                 }
+         }
+        else if ( (accelleration>=limit ) && (currentState == onPause))
                 {
                 currentState = onMove;
+                xt=x;
+                yt=y;
+                zt=z;
                 }
         
-        utility_p->test(dx,dy,dz,step,test);
+        utility_p->test(x,y,z,step,accelleration,aMax,limit);
         
 }
 
@@ -150,9 +179,12 @@ void Pedometer::average(Average* average,int num){
     average->z=(int16_t)(averageZf+0.5);
 }
 
+void Pedometer::accMax(){
+    if(accelleration>aMax) aMax=accelleration;
+}
+
 void Pedometer::incrementStep(){
     step++;
-    utility_p->ledBlue();
     //if(!(step%50)) evviva(step);
 }
 

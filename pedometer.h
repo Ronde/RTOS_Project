@@ -46,6 +46,8 @@ private:
    
    void average(Average* average,int num);
    
+   void accMax();
+   
    void incrementStep();
    
    void updateData();

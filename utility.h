@@ -23,7 +23,7 @@ public:
     void ledBlue();
     void ledRed();
     void ledGreen();
-    void test(int16_t x,int16_t y,int16_t z,int step,long unsigned test);
+    void test(int16_t x,int16_t y,int16_t z,int step,int accelleration,int aMax, int limit);
     ~Utility()
     {
         instanceFlag = false;
