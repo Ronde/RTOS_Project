@@ -1,7 +1,8 @@
 /**
  * File:   pedometer.cpp
- *  \brief     INTRO VELOCE
- *  \details   DETTAGLI
+ *  \brief     This class contains the logic to understand if a movement is a step
+ *             or not
+
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0
@@ -20,6 +21,9 @@
 using namespace std;
 using namespace miosix;
 
+/**
+ * Defines the state of the counter
+ */
 typedef enum
    {
    onPause = 0,
@@ -33,6 +37,9 @@ Lis302dl lis302dl;
 tState currentState= onPause;
 Utility* utility_p;
 
+/**
+ * Class constructor
+ */
 Pedometer::Pedometer(){
     utility_p=Utility::getInstance();
     
@@ -50,6 +57,11 @@ Pedometer::Pedometer(){
     }
 }
 
+/**
+ * Starts the step counting
+ * @param void
+ * @returns void
+ */
 void Pedometer::start(){
     
     utility_p->ledGreen();
@@ -65,6 +77,7 @@ void Pedometer::start(){
         stepCounter();
         }
 }
+
 
 void Pedometer::stepCounter(){
         
@@ -143,10 +156,19 @@ void Pedometer::incrementStep(){
     //if(!(step%50)) evviva(step);
 }
 
+/**
+ * getter of actual steps number
+ * @param void
+ * @returns int number of steps
+ */
 int Pedometer::getStep(){
     return step;
 }
 
+/**
+ * print on serial peripheral the values of the average acceleration on the 3 axes
+ * debug only
+ */
 void Pedometer::mediaPrint(){
         printf("\nmedia4x: %i\t",average4.x);
         printf("media16x: %i\t",average16.x);
@@ -156,6 +178,10 @@ void Pedometer::mediaPrint(){
         printf("media16z: %i\t",average16.z);
 }
 
+/**
+ * print on serial peripheral the acceleration for the x axe
+ * debug only
+ */
 void Pedometer::dataXPrint(){
     printf("x: %i dataX: ",x);
     for(int i=0;i<15;i++){
@@ -163,7 +189,11 @@ void Pedometer::dataXPrint(){
     }
     printf("\n");
 }
-    
+
+/**
+ * print on serial peripheral the acceleration for the y axe
+ * debug only
+ */
 void Pedometer::dataYPrint(){
     printf("y: %i dataY: ",y);
     for(int i=0;i<15;i++){
@@ -172,6 +202,10 @@ void Pedometer::dataYPrint(){
     printf("\n");
 }
 
+/**
+ * print on serial peripheral the acceleration for the z axe
+ * debug only
+ */
 void Pedometer::dataZPrint(){
     printf("z: %i dataZ: ",z);
     for(int i=0;i<15;i++){
