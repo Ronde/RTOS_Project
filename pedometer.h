@@ -16,20 +16,20 @@ class Pedometer
 {
 public:
     
-   static Utility* getInstance();
+   static Pedometer* getInstance();
     
    void start();
    
    int getStep();
    
-       ~Pedometer()
+   ~Pedometer()
     {
         instanceFlag = false;
     }
    
 private:
     
-    Pedometer();
+   Pedometer();
     
    static Pedometer *pedometer;
     
