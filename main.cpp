@@ -10,16 +10,24 @@
 #include <cstdlib>
 #include <cstdio>
 #include "pedometer.h"
+#include "statistics.h"
 
 using namespace std;
 
-Pedometer pedometer;
+Pedometer* pedometer;
+Statistics* statistics;
 
 /*
  * Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
-    pedometer.start();
+    pedometer = Pedometer.getInstance();
+    std::thread first (pedometer.start());
+    std::thread second (statistics = Statistics.getInstance());
+    
+    first.join();
+    second.join();
+    
     return 0;
 }
 
