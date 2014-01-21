@@ -117,7 +117,7 @@ void Statistics::start(){
             break;
         case(7):
             moving=true;
-            multParam=1.2;
+            multParam=1;
             break;
         default:
             moving=true;

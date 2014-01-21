@@ -18,7 +18,8 @@ main.cpp\
 pedometer\
 lis302dl.cpp\
 spi1.cpp\
-utility.cpp
+utility.cpp\
+statistics.cpp
 ##
 ## List here additional static libraries with relative path
 ##
@@ -84,3 +85,4 @@ main.elf: $(OBJ) miosix/libmiosix.a
 
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $< -o $@
+file:///home/user/Desktop/miosix-kernel/Makefile
