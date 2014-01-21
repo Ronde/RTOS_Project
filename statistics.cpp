@@ -31,6 +31,9 @@ int height;
 Pedometer* pedometer;
 float multParam;
 bool moving;
+int walkTime;
+int runTime;
+int stopTime;
 
 bool Statistics::instanceFlag = false;
 Statistics* Statistics::statistics = NULL;
@@ -50,6 +53,9 @@ Statistics::Statistics(){
     height=170; //=getHeight(); from the interface module.
     multParam=1;
     moving=false;
+    runTime=0;
+    walkTime=0;
+    stopTime=0;
 }
 
 /**
@@ -89,39 +95,48 @@ void Statistics::start(){
             
         case (0): 
             moving=false;
+            stopTime+=2;
             break;
             
         case (1): 
             moving=true;
             multParam=5;
+            walkTime+=2;
             break;
         case (2): 
             moving=true;
             multParam=5;
+            walkTime+=2;
             break;
         case (3):
             moving=true;
+            walkTime+=2;
             multParam=5;
             break;
         case (4):
             moving=true;
             multParam=3;
+            runTime+=2;
             break;
         case (5):
             moving=true;
             multParam=2;
+            runTime+=2;
             break;
         case(6):
             moving=true;
             multParam=1.2;
+            runTime+=2;
             break;
         case(7):
             moving=true;
             multParam=1;
+            runTime+=2;
             break;
         default:
             moving=true;
             multParam=(1/1.2);
+            runTime+=2;
     }
                     
     if(moving){
@@ -152,4 +167,16 @@ float Statistics::getDistance(){
  */
 int Statistics::getTime(){
     return seconds;
+}
+
+int Statistics::getWalkTime(){
+    return walkTime;
+}
+
+int Statistics::getRunTime(){
+    return runTime;
+}
+
+int Statistics::getStopTime(){
+    return stopTime;
 }
