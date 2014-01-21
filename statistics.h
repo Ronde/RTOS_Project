@@ -25,6 +25,12 @@ public:
     
     float getDistance();
     
+    int getRunTime();
+    
+    int getWalkTime();
+    
+    int getStopTime();
+    
         ~Pedometer()
     {
         instanceFlag = false;
@@ -44,6 +50,9 @@ private:
     int height;
     float multParam;
     bool moving;
+    int runTime;
+    int walkTime;
+    int stopTime;
            
 };
 
