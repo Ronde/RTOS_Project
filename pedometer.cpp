@@ -16,7 +16,7 @@
 #include "utility.h"
 #include <math.h>
 
-#define LIMIT   180
+#define LIMIT   165
 #define R       2
 #define RANGE   256
 
@@ -136,7 +136,7 @@ void Pedometer::stepCounter(){
         //Ogni 100 valori ricalcolo il limite. Limite dinamico
         if(dataLimit==100){
                         limit=aMax-15;
-                        aMax=195;
+                        aMax=LIMIT+15;
                         dataLimit=0;
                     }
         

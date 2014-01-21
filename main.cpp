@@ -8,18 +8,15 @@
  */
 
 #include <cstdlib>
-#include <cstdio>
 #include "pedometer.h"
 #include "statistics.h"
 #include <thread>
-
-using namespace std;
 
 Pedometer* pedometer;
 Statistics* statistics;
 
 void startPedometer(){
-    pedomenter.start();
+    pedometer.start();
 }
 
 void startStatistics(){
