@@ -11,19 +11,30 @@
 #include <cstdio>
 #include "pedometer.h"
 #include "statistics.h"
+#include <thread>
 
 using namespace std;
 
 Pedometer* pedometer;
 Statistics* statistics;
 
+void startPedometer(){
+    pedomenter.start();
+}
+
+void startStatistics(){
+    statistics.start();
+}
+
 /*
  * Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
+    
     pedometer = Pedometer.getInstance();
-    std::thread first (pedometer.start());
-    std::thread second (statistics = Statistics.getInstance());
+    std::thread first (startPedometer);
+    statistics = Statistics.getInstance();
+    std::thread second (startStatistics);
     
     first.join();
     second.join();
