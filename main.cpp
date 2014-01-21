@@ -10,17 +10,17 @@
 #include <cstdlib>
 #include "pedometer.h"
 #include "statistics.h"
-#include <thread>
+#include <pthread.h>
 
-Pedometer* pedometer;
+Pedometer* pedometerApp;
 Statistics* statistics;
 
-void startPedometer(){
-    pedometer.start();
+void *startPedometer(void *arg){
+    pedometerApp->start();
 }
 
-void startStatistics(){
-    statistics.start();
+void *startStatistics(void *arg){
+    statistics->start();
 }
 
 /*
@@ -28,13 +28,18 @@ void startStatistics(){
  */
 int main(int argc, char** argv) {
     
-    pedometer = Pedometer.getInstance();
-    std::thread first (startPedometer);
-    statistics = Statistics.getInstance();
-    std::thread second (startStatistics);
+    pedometerApp = Pedometer::getInstance();
     
-    first.join();
-    second.join();
+    pthread_t pedometerThread;
+    pthread_create(&pedometerThread,NULL,&startPedometer,NULL);
+    
+    statistics = Statistics::getInstance();
+    
+    pthread_t statisticsThread;
+    pthread_create(&statisticsThread,NULL,&startStatistics,NULL);
+    
+    pthread_join(pedometerThread,NULL);
+    pthread_join(statisticsThread,NULL);
     
     return 0;
 }
