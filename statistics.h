@@ -31,7 +31,7 @@ public:
     
     int getStopTime();
     
-        ~Pedometer()
+        ~Statistics()
     {
         instanceFlag = false;
     }
