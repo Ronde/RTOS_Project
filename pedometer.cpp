@@ -16,9 +16,10 @@
 #include "utility.h"
 #include <math.h>
 
-#define LIMIT   165
-#define R       2
+#define LIMIT   160
+#define R       3
 #define RANGE   256
+#define PAUSE   20000
 
 using namespace std;
 using namespace miosix;
@@ -63,7 +64,7 @@ Pedometer::Pedometer(){
     yt=0;
     zt=0;
     step=0;
-    aMax=16;
+    aMax=LIMIT+15;
     accelleration=0;
     limit=LIMIT;
 }
@@ -108,6 +109,9 @@ void Pedometer::start(){
         takeAverage();
 
         stepCounter();
+        
+        usleep(PAUSE);
+        
         }
 }
 
@@ -158,7 +162,7 @@ void Pedometer::stepCounter(){
                 zt=z;
                 }
         
-        utility_p->test(x,y,z,step,accelleration,aMax,limit);
+        //utility_p->test(x,y,z,step,accelleration,aMax,limit);
         
 }
 
