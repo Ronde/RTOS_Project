@@ -53,6 +53,7 @@ private:
     int runTime;
     int walkTime;
     int stopTime;
+    float stride;
            
 };
 

@@ -34,6 +34,7 @@ bool moving;
 int walkTime;
 int runTime;
 int stopTime;
+float stride;
 
 bool Statistics::instanceFlag = false;
 Statistics* Statistics::statistics = NULL;
@@ -56,6 +57,7 @@ Statistics::Statistics(){
     runTime=0;
     walkTime=0;
     stopTime=0;
+    stride=0;
 }
 
 /**
@@ -138,11 +140,13 @@ void Statistics::start(){
             multParam=(1/1.2);
             runTime+=2;
     }
-                    
+    
+                       
     if(moving){
-        avg=((avg*seconds)+(height*2/multParam)/(seconds+2));
+        stride = height/multParam;
         seconds+=2;
-        distance+=height*2/multParam;
+        distance+=(stride*stepsInInterval);
+        avg=distance/seconds;
     } 
    }
 }
