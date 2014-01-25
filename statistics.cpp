@@ -16,6 +16,7 @@
 #include "statistics.h"
 #include "pedometer.h"
 #include <math.h>
+#include "utility.h"
 
 using namespace std;
 using namespace miosix;
@@ -34,16 +35,18 @@ bool moving;
 int walkTime;
 int runTime;
 int stopTime;
+int newSteps;
 float stride;
 
 bool Statistics::instanceFlag = false;
 Statistics* Statistics::statistics = NULL;
+Utility* utility_st;
 
 /**
  * Private class constructor
  */
 Statistics::Statistics(){
-    
+    utility_st=Utility::getInstance();
     pedometer = Pedometer::getInstance();
     avg=0;
     oldSteps = pedometer->getStep();
@@ -58,6 +61,7 @@ Statistics::Statistics(){
     walkTime=0;
     stopTime=0;
     stride=0;
+    newSteps=0;
 }
 
 /**
@@ -90,8 +94,10 @@ Statistics* Statistics::getInstance()
 
 void Statistics::start(){
     while(true){
-    usleep(2000);
-    stepsInInterval = (pedometer->getStep()-oldSteps);
+    
+    usleep(1900000);
+    newSteps=pedometer->getStep();
+    stepsInInterval = (newSteps-oldSteps);
 
     switch(stepsInInterval){
             
@@ -148,6 +154,7 @@ void Statistics::start(){
         distance+=(stride*stepsInInterval);
         avg=distance/seconds;
     } 
+    oldSteps=newSteps;
     utility_st->test2(stepsInInterval,newSteps,distance,height,multParam,avg);
    }
 }
