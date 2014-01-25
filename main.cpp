@@ -11,15 +11,19 @@
 #include "pedometer.h"
 #include "statistics.h"
 #include <pthread.h>
+#include "miosix.h"
 
 Pedometer* pedometerApp;
 Statistics* statistics;
+#define PRIORITY_MAX 2
 
 void *startPedometer(void *arg){
+    miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-1);
     pedometerApp->start();
 }
 
 void *startStatistics(void *arg){
+    miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-2);
     statistics->start();
 }
 
@@ -29,14 +33,13 @@ void *startStatistics(void *arg){
 int main(int argc, char** argv) {
     
     pedometerApp = Pedometer::getInstance();
-    
-    pthread_t pedometerThread;
-    pthread_create(&pedometerThread,NULL,&startPedometer,NULL);
-    
     statistics = Statistics::getInstance();
     
     pthread_t statisticsThread;
     pthread_create(&statisticsThread,NULL,&startStatistics,NULL);
+    
+    pthread_t pedometerThread;
+    pthread_create(&pedometerThread,NULL,&startPedometer,NULL);
     
     pthread_join(pedometerThread,NULL);
     pthread_join(statisticsThread,NULL);
