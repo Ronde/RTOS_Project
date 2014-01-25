@@ -148,6 +148,7 @@ void Statistics::start(){
         distance+=(stride*stepsInInterval);
         avg=distance/seconds;
     } 
+    utility_st->test2(stepsInInterval,newSteps,distance,height,multParam,avg);
    }
 }
 
