@@ -155,6 +155,7 @@ void Statistics::start(){
         avg=distance/seconds;
     } 
     oldSteps=newSteps;
+    
     utility_st->test2(stepsInInterval,newSteps,distance,height,multParam,avg);
    }
 }

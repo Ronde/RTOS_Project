@@ -162,7 +162,7 @@ void Pedometer::stepCounter(){
                 zt=z;
                 }
         
-        //utility_p->test(x,y,z,step,accelleration,aMax,limit);
+        //utility_p->test(dx,dy,dz,step,accelleration,aMax,limit);
         
 }
 
