@@ -10,11 +10,13 @@
  */
 
 #include <cstdio>
+#include <pthread.h>
 #include "miosix.h"
 #include "lis302dl.h"
 #include "pedometer.h"
 #include "utility.h"
 #include <math.h>
+#include "slice-and-play.h"
 
 #define LIMIT   160
 #define R       3
@@ -38,6 +40,8 @@ int16_t x, y, z;
 Lis302dl lis302dl;
 tState currentState= onPause;
 Utility* utility_p;
+pthread_t player;
+pthread_t wifiPlayer;
 
 bool Pedometer::instanceFlag = false;
 Pedometer* Pedometer::pedometer = NULL;
@@ -212,10 +216,18 @@ void Pedometer::accMax(){
     if(accelleration>aMax) aMax=accelleration;
 }
 
+void *playSteps(void *args){
+    ring::instance().play_n_of_step(step,100);
+}
+
 void Pedometer::incrementStep(){
     step++;
-    //if(!(step%50)) evviva(step);
+    if(step%2 == 0){
+        pthread_create(&player, NULL, &playSteps, NULL);
+    }
 }
+
+
 
 /**
  * getter of actual steps number
@@ -273,4 +285,24 @@ void Pedometer::dataZPrint(){
         printf("%i",data.lastDataZ[i]);
     }
     printf("\n");
+}
+
+void *playTrombone(void *args){
+    ring::instance().looser_Song(100);
+}
+
+void *playVittoria(void *args){    
+	ring::instance().victory_Song(100);
+}
+
+void Pedometer::compareSteps(int otherSteps){
+    
+    if(step<=otherSteps){
+        pthread_create(&wifiPlayer, NULL, &playTrombone, NULL);
+    }
+    
+    else{
+        pthread_create(&wifiPlayer, NULL, &playVittoria, NULL);
+    }
+    
 }

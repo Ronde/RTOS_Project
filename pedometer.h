@@ -15,12 +15,14 @@
 class Pedometer
 {
 public:
-    
-   static Pedometer* getInstance();
+ 
+    static Pedometer* getInstance();
     
    void start();
    
    int getStep();
+
+   void compareSteps(int otherSteps);
    
    ~Pedometer()
     {

@@ -19,7 +19,10 @@ pedometer\
 lis302dl.cpp\
 spi1.cpp\
 utility.cpp\
-statistics.cpp
+statistics.cpp\
+player.cpp\
+slice-and-play.cpp\
+adpcm.cpp
 ##
 ## List here additional static libraries with relative path
 ##
