@@ -27,7 +27,7 @@ using namespace std;
 using namespace miosix;
 
 /**
- * Defines the state of the counter
+ * \brief Defines the state of the counter
  */
 typedef enum
    {
@@ -47,7 +47,7 @@ bool Pedometer::instanceFlag = false;
 Pedometer* Pedometer::pedometer = NULL;
 
 /**
- * Private class constructor
+ * \brief Private class constructor
  */
 Pedometer::Pedometer(){
     utility_p=Utility::getInstance();
@@ -96,7 +96,7 @@ Pedometer* Pedometer::getInstance(){
 }
 
 /**
- * Starts the step counting
+ * \brief Starts the step counting
  * @param void
  * @returns void
  */
@@ -230,7 +230,7 @@ void Pedometer::incrementStep(){
 
 
 /**
- * getter of actual steps number
+ * \brief getter of actual steps number
  * @param void
  * @returns int number of steps
  */
@@ -239,7 +239,7 @@ int Pedometer::getStep(){
 }
 
 /**
- * print on serial peripheral the values of the average acceleration on the 3 axes
+ * \brief print on serial peripheral the values of the average acceleration on the 3 axes
  * debug only
  */
 void Pedometer::mediaPrint(){
@@ -252,7 +252,7 @@ void Pedometer::mediaPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the x axe
+ * \brief print on serial peripheral the acceleration for the x axe
  * debug only
  */
 void Pedometer::dataXPrint(){
@@ -264,7 +264,7 @@ void Pedometer::dataXPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the y axe
+ * \brief print on serial peripheral the acceleration for the y axe
  * debug only
  */
 void Pedometer::dataYPrint(){
@@ -276,7 +276,7 @@ void Pedometer::dataYPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the z axe
+ * \brief print on serial peripheral the acceleration for the z axe
  * debug only
  */
 void Pedometer::dataZPrint(){
@@ -295,6 +295,11 @@ void *playVittoria(void *args){
 	ring::instance().victory_Song(100);
 }
 
+/**
+* \brief Plays winning sound if actual step is grater than oterSteps, otherwise plays a lose sound.
+*@param otherSteps: int
+*@return void
+*/
 void Pedometer::compareSteps(int otherSteps){
     
     if(step<=otherSteps){

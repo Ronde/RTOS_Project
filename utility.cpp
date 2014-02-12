@@ -60,7 +60,7 @@ Utility* Utility::getInstance()
 }
 
 /**
- * make the blue led blink one time
+ * \brief make the blue led blink one time
  * @param void
  * @return void
  */
@@ -72,7 +72,7 @@ void Utility::ledBlue(){
 }
 
 /**
- * make the red led blink one time
+ * \brief make the red led blink one time
  * @param void
  * @return void
  */
@@ -84,7 +84,7 @@ void Utility::ledRed(){
 }
 
 /**
- * make the green led blink one time
+ * \brief make the green led blink one time
  * @param void
  * @return void
  */
@@ -96,7 +96,7 @@ void Utility::ledGreen(){
 }
 
 /**
- * print the program variables on serial interface
+ * \brief print the program variables on serial interface
  * @param x the x-axe acceleration
  * @param y the y-axe acceleration
  * @param z the z-axe acceleration
@@ -116,6 +116,16 @@ void Utility::test(int16_t x,int16_t y,int16_t z,int step,int accelleration,int 
     
 }
 
+/**
+ * \brief print the statistics variables on serial interface
+ * @param stepsInterval steps in the last 2 seconds
+ * @param oldSteps old total values of steps 
+ * @param distance total distance traveled
+ * @param height user height
+ * @param multParam parameter calculated on the stepsInterval value
+ * @param avg average speed
+ * @return void
+ */
 void Utility::test2(int stepsInInterval,int oldSteps,float distance,int height,float multiParam,float avg){
     
     printf("\nstepsInt: %i\t",stepsInInterval);
