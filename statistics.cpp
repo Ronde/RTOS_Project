@@ -93,7 +93,6 @@ Statistics* Statistics::getInstance()
  * @param void
  * @return void
  */
-
 void Statistics::start(){
     while(true){
     
